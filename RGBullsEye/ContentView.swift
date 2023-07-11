@@ -61,6 +61,7 @@ struct ContentView: View {
                     showScore = true
                     game.check(guess: guess)
                 }
+                .font(.subheadline)
                 .buttonStyle(NeuButtonStyle(width: 327, height: 48))
                 .background(Capsule())
                 .alert(isPresented: $showScore) {
@@ -73,6 +74,7 @@ struct ContentView: View {
                 }
             }
         }
+        .font(.headline)
     }
 }
 

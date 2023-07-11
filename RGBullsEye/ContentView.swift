@@ -37,40 +37,47 @@ struct ContentView: View {
     @State var guess: RGB
     @State var showScore = false
     
+    let circleSize: CGFloat = 0.22
+    let labelHeight: CGFloat = 0.06
+    let labelwidth: CGFloat = 0.53
+    let buttonWidth: CGFloat = 0.87
+    
     var body: some View {
-        ZStack {
-            Color.element
-                .ignoresSafeArea()
-            VStack{
-                ColorCircle(rgb: game.target, size: 200)
-                if !showScore {
-                    BevelText(text: "R: ??? G: ?? B: ???", width: 200, height: 48)
+        GeometryReader { proxy in
+            ZStack {
+                Color.element
+                    .ignoresSafeArea()
+                VStack{
+                    ColorCircle(rgb: game.target, size: proxy.size.height * circleSize)
+                    if !showScore {
+                        BevelText(text: "R: ??? G: ?? B: ???", width: proxy.size.width * labelwidth, height: proxy.size.height * labelHeight)
+                            .padding()
+                    } else {
+                        BevelText(text: game.target.intString(), width: proxy.size.width * labelwidth, height: proxy.size.height * labelHeight)
+                            .padding()
+                    }
+                    ColorCircle(rgb: guess, size: proxy.size.height * circleSize)
+                    BevelText(text: guess.intString(), width: proxy.size.width * labelwidth, height:  proxy.size.height * labelHeight)
                         .padding()
-                } else {
-                    BevelText(text: game.target.intString(), width: 200, height: 48)
-                        .padding()
-                }
-                ColorCircle(rgb: guess, size: 200)
-                BevelText(text: guess.intString(), width: 200, height: 48) 
-                    .padding()
-                ColorSlider(value: $guess.red, trackColor: .red)
-                ColorSlider(value: $guess.green, trackColor: .green)
-                ColorSlider(value: $guess.blue, trackColor: .blue)
-                Button("Hit Me!"){
-                    // action
-                    showScore = true
-                    game.check(guess: guess)
-                }
-                .font(.subheadline)
-                .buttonStyle(NeuButtonStyle(width: 327, height: 48))
-                .background(Capsule())
-                .alert(isPresented: $showScore) {
-                    Alert(title: Text("Your Score"),
-                          message: Text(String(game.scoreRound)),
-                          dismissButton: .default(Text("OK")) {
-                        game.startNewRound()
-                        guess = RGB()
-                    })
+                    ColorSlider(value: $guess.red, trackColor: .red)
+                    ColorSlider(value: $guess.green, trackColor: .green)
+                    ColorSlider(value: $guess.blue, trackColor: .blue)
+                    Button("Hit Me!"){
+                        // action
+                        showScore = true
+                        game.check(guess: guess)
+                    }
+                    .font(.subheadline)
+                    .buttonStyle(NeuButtonStyle(width:  proxy.size.width * buttonWidth, height: proxy.size.height * labelHeight))
+                    .background(Capsule())
+                    .alert(isPresented: $showScore) {
+                        Alert(title: Text("Your Score"),
+                              message: Text(String(game.scoreRound)),
+                              dismissButton: .default(Text("OK")) {
+                            game.startNewRound()
+                            guess = RGB()
+                        })
+                    }
                 }
             }
         }
@@ -80,7 +87,14 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(guess: RGB())
+        Group {
+            ContentView(guess: RGB())
+                .previewDevice(PreviewDevice(rawValue: "iPhone 8"))
+            ContentView(guess: RGB())
+                .previewDevice(PreviewDevice(rawValue: "iPhone 14 Pro"))
+            ContentView(guess: RGB())
+                .previewDevice(PreviewDevice(rawValue: "iPhone 14 Pro MaX"))
+        }
     }
 }
 

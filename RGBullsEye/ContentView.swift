@@ -56,11 +56,13 @@ struct ContentView: View {
                 ColorSlider(value: $guess.red, trackColor: .red)
                 ColorSlider(value: $guess.green, trackColor: .green)
                 ColorSlider(value: $guess.blue, trackColor: .blue)
-                Button("Hit Me!") {
+                Button("Hit Me!"){
                     // action
                     showScore = true
                     game.check(guess: guess)
                 }
+                .buttonStyle(NeuButtonStyle(width: 327, height: 48))
+                .background(Capsule())
                 .alert(isPresented: $showScore) {
                     Alert(title: Text("Your Score"),
                           message: Text(String(game.scoreRound)),
